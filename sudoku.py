@@ -59,7 +59,6 @@ def get_block(sdk, block=None, row=None, col=None):
         r = 6
     elif block in [7, 8, 9]:
         r = 9
-    print(r, c)
     return [sdk[row][col] for row in range(9) for col in range(9) if (row >= (r - 3) and row < r and col >= (c - 3) and col < c)]
 
 
@@ -89,9 +88,10 @@ def main():
     for r in range(len(sdk)):
         for c in range(len(sdk[r])):
             col2row = [[row[col] for row in sdk] for col in range(len(sdk[r]))]  # 行列转换
-            block = get_block(r + 1, c + 1)
+            block = get_block(sdk=sdk, row=r + 1, col=c + 1)
             print "row:", r + 1, "col:", c + 1, "\nchoice:", [x for x in nums if (x not in sdk[r]) and (x not in col2row[c])], '\nrow:', sdk[r], '\nblock:', block
-            sdk[r][c] = rand.choice([x for x in nums if (x not in get_row(r)) and (x not in get_col(c)) and (x not in block)])
+            can_choice = [x for x in nums if (x not in get_row(sdk, r)) and (x not in get_col(sdk, c)) and (x not in block)]
+            sdk[r][c] = rand.choice(can_choice)
             print "row after:", sdk[r], '\ncol after:', [[row[col] for row in sdk] for col in range(len(sdk[r]))][c]
         print("---------------------------")
         for row in sdk:
