@@ -43,6 +43,7 @@ def get_block(sdk, block=None, row=None, col=None):
     if not block:
         block = get_block_num(row, col)
 
+    print(block)
     r = 0
     c = 0
     if block in [1, 4, 7]:
@@ -58,7 +59,8 @@ def get_block(sdk, block=None, row=None, col=None):
         r = 6
     elif block in [7, 8, 9]:
         r = 9
-    return [sdk[row][col] for row in range(9) for col in range(9) if (row >= 3 * (r - 1) and row < 3 * r and col >= 3 * (c - 1) and col < 3 * c)]
+    print(r, c)
+    return [sdk[row][col] for row in range(9) for col in range(9) if (row >= (r - 3) and row < r and col >= (c - 3) and col < c)]
 
 
 def get_block_num(row, col):
