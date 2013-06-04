@@ -16,6 +16,31 @@ __enc32__ = [
 __enc16__ = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']
 
 
+__morse_code__ = {
+    'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.', 'G': '--.',
+    'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..', 'M': '--', 'N': '-.',
+    'O': '---', 'P': '.--.', 'Q': '--.-', 'R': '.-.', 'S': '...', 'T': '-', 'U': '..-',
+    'V': '...-', 'W': '.--', 'X': '-..-', 'Y': '-.--', 'Z': '--..',
+
+    '1': ['.----', '.-'], '2': ['..---', '..-'], '3': ['...--', '...-'], '4': ['....-', '....-'], '5': ['.....', '.'],
+    '6': ['-....', '-....'], '7': ['--...', '-...'], '8': ['---..', '-..'], '9': ['----.', '-.'], '0': ['-----', '-'],
+
+    '.': '.-.-.-', ':': '---...', ',': '--..--', ';': '-.-.-.', '?': '..--..', '=': '-...-', "'": '.---.',
+    '/': '-..-.', '!': '-.-.--', '-': '-....-', '_': '..--.-', '"': '.-..-.', '(': '-.--.', ')': '-.--.-',
+    '$': '...-..-', '&': '.-...', '@': '.--.-.'
+}
+
+
+__de_morse_code__ = {}
+
+for c in __morse_code__:
+    if type(__morse_code__[c]) == list:
+        for _c in __morse_code__[c]:
+            __de_morse_code__[_c] = c
+        continue
+    __de_morse_code__[__morse_code__[c]] = c
+
+
 def base64_encode(data):
     """
     Base 64 encoder
@@ -58,10 +83,10 @@ def base64_decode(data):
         if mod == 0:
             continue
         elif mod == 1:
-            prev = __enc64__.index(data[i-1])
+            prev = __enc64__.index(data[i - 1])
             result.append(chr(prev << 2 | cur >> 4))
         elif mod == 2:
-            prev = __enc64__.index(data[i-1])
+            prev = __enc64__.index(data[i - 1])
             result.append(chr((prev & 0x0f) << 4 | cur >> 2))
         elif mod == 3:
             prev = __enc64__.index(data[i - 1])
@@ -85,4 +110,24 @@ def base16_decode(data):
         low = __enc16__.index(data[i + 1])
         result.append(chr(high << 4 | low))
 
+    return "".join(result)
+
+
+def morse_encode(data, di='.', da='-', seg='/'):
+    data = data.upper()
+    encoded = []
+    for c in data:
+        if type(__morse_code__[c]) == list:
+            encoded.append(__morse_code__[c][0])
+        else:
+            encoded.append(__morse_code__[c])
+    return seg.join(encoded)
+
+
+def morse_decode(data, di='.', da='-', seg='/'):
+    codes = data.split("/")
+    result = []
+    for code in codes:
+        if code:
+            result.append(__de_morse_code__[code])
     return "".join(result)
