@@ -121,7 +121,7 @@ def morse_encode(data):
             encoded.append(__morse_code__[c][0])
         else:
             encoded.append(__morse_code__[c])
-    return seg.join(encoded)
+    return "/".join(encoded)
 
 
 def morse_decode(data):
