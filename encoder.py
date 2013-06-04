@@ -113,7 +113,7 @@ def base16_decode(data):
     return "".join(result)
 
 
-def morse_encode(data, di='.', da='-', seg='/'):
+def morse_encode(data):
     data = data.upper()
     encoded = []
     for c in data:
@@ -124,7 +124,7 @@ def morse_encode(data, di='.', da='-', seg='/'):
     return seg.join(encoded)
 
 
-def morse_decode(data, di='.', da='-', seg='/'):
+def morse_decode(data):
     codes = data.split("/")
     result = []
     for code in codes:
