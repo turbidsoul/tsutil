@@ -1,14 +1,16 @@
 # -*- coding: utf8 -*-
-from math2 import leibniz_pi, wallis_pi
+from math2 import Pi
 from encoder import morse_encode, morse_decode
 
 
 def test_math2():
-    print(leibniz_pi(9999999))
-    print(wallis_pi(9999999))
+    pi = Pi()
+    print(pi.leibniz_pi(999999))
+    print(pi.wallis_pi(999999))
 
 
 def test_encoder():
+
     result = morse_encode('4194418141634192622374')
     print(result)
 
@@ -18,4 +20,4 @@ def test_encoder():
     result = morse_decode('....-/.----/----./....-/....-/.----/---../.----/....-/.----/-..../...--/....-/.----/----./..---/-..../..---/..---/...--/--.../....-')
     print(result)
 
-test_encoder()
+test_math2()
