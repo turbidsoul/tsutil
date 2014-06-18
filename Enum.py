@@ -1,40 +1,16 @@
-"""Enumeration metaclass.
-
-XXX This is very much a work in progress.
-
-"""
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# @Author: Turbidsoul Chen
+# @Date:   2014-06-18 16:39:48
+# @Last Modified by:   Turbidsoul Chen
+# @Last Modified time: 2014-06-18 16:44:34
 
 import string
 
+
 class EnumMetaClass:
-    """Metaclass for enumeration.
-
-    To define your own enumeration, do something like
-
-    class Color(Enum):
-        red = 1
-        green = 2
-        blue = 3
-
-    Now, Color.red, Color.green and Color.blue behave totally
-    different: they are enumerated values, not integers.
-
-    Enumerations cannot be instantiated; however they can be
-    subclassed.
-
-    """
 
     def __init__(self, name, bases, dict):
-        """Constructor -- create an enumeration.
-
-        Called at the end of the class statement.  The arguments are
-        the name of the new class, a tuple containing the base
-        classes, and a dictionary containing everything that was
-        entered in the class' namespace during execution of the class
-        statement.  In the above example, it would be {'red': 1,
-        'green': 2, 'blue': 3}.
-
-        """
         for base in bases:
             if base.__class__ is not EnumMetaClass:
                 raise TypeError, "Enumeration base class must be enumeration"
@@ -46,20 +22,6 @@ class EnumMetaClass:
             self.__dict[key] = EnumInstance(name, key, value)
 
     def __getattr__(self, name):
-        """Return an enumeration value.
-
-        For example, Color.red returns the value corresponding to red.
-
-        XXX Perhaps the values should be created in the constructor?
-
-        This looks in the class dictionary and if it is not found
-        there asks the base classes.
-
-        The special attribute __members__ returns the list of names
-        defined in this class (it does not merge in the names defined
-        in base classes).
-
-        """
         if name == '__members__':
             return self.__dict.keys()
 
@@ -86,17 +48,17 @@ class EnumMetaClass:
             s = "%s: {%s}" % (s, string.join(list, ", "))
         return s
 
+    def names(self):
+        return [name for name in self.__dict.keys() if not name.startswith('__')]
+
+    def values(self):
+        return [item[1].value for item in self.__dict.items() if not item[0].startswith('__')]
+
+    def value_of(self, name):
+        return self.__getattr__(name)
+
 
 class EnumInstance:
-    """Class to represent an enumeration value.
-
-    EnumInstance('Color', 'red', 12) prints as 'Color.red' and behaves
-    like the integer 12 when compared, but doesn't support arithmetic.
-
-    XXX Should it record the actual enumeration rather than just its
-    name?
-
-    """
 
     def __init__(self, classname, enumname, value):
         self.__classname = classname
@@ -115,55 +77,17 @@ class EnumInstance:
         return "%s.%s" % (self.__classname, self.__enumname)
 
     def __cmp__(self, other):
-        return cmp(self.__value, int(other))
+        if not isinstance(other, EnumInstance):
+            return True
+        return cmp(self.name, other.name)
+
+    @property
+    def value(self):
+        return self.__value
+
+    @property
+    def name(self):
+        return self.__enumname
 
 
-# Create the base class for enumerations.
-# It is an empty enumeration.
 Enum = EnumMetaClass("Enum", (), {})
-
-
-def _test():
-
-    class Color(Enum):
-        red = 1
-        green = 2
-        blue = 3
-
-    print Color.red
-    print dir(Color)
-
-    print Color.red == Color.red
-    print Color.red == Color.blue
-    print Color.red == 1
-    print Color.red == 2
-
-    class ExtendedColor(Color):
-        white = 0
-        orange = 4
-        yellow = 5
-        purple = 6
-        black = 7
-
-    print ExtendedColor.orange
-    print ExtendedColor.red
-
-    print Color.red == ExtendedColor.red
-
-    class OtherColor(Enum):
-        white = 4
-        blue = 5
-
-    class MergedColor(Color, OtherColor):
-        pass
-
-    print MergedColor.red
-    print MergedColor.white
-
-    print Color
-    print ExtendedColor
-    print OtherColor
-    print MergedColor
-
-if __name__ == '__main__':
-    _test()
