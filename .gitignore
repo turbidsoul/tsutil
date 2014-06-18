@@ -56,7 +56,6 @@ htmlcov/
 .cache
 nosetests.xml
 coverage.xml
->>>>>>> FETCH_HEAD
 
 # Translations
 *.mo
@@ -76,3 +75,4 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
+MANIFEST
