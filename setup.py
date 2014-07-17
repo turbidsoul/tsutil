@@ -6,8 +6,8 @@ reqs = ['requests==2.3.0', 'chardet==2.1.1']
 
 setup(
       name='tsutil',
-      version='0.1.5',
-      py_modules=['tsutil.enum', 'tsutil.encoder', 'tsutil.util'],
+      version='0.1.6.1',
+      py_modules=['tsutil.enum', 'tsutil.encoder', 'tsutil.util', 'tsutil.daemonize'],
       author='Turbidsoul Chen',
       author_email='sccn.sq+py@gmail.com',
       url='http://github.com/turbidsoul/tsutil',
