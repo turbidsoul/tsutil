@@ -2,14 +2,17 @@
 # -*- coding: utf-8 -*-
 # @Author: Turbidsoul Chen
 # @Date:   2014-07-18 16:53:33
-# @Last Modified by:   Turbidsoul Chen
-# @Last Modified time: 2014-07-19 17:41:19
+# @Last Modified 2014-07-19
 
 
 import time
-import subprocess
+from subprocess import Popen, PIPE
 from enum import Enum
 from util import is_str
+
+
+class RRDError(Exception):
+    pass
 
 
 class DSType(Enum):
@@ -65,7 +68,6 @@ class RRA(object):
         return self.__str__()
 
 class RRD(object):
-
     def __init__(self, rrd_file, start=int(time.time())-10, step=300,
                  dataSources=[], rras=[], no_overwrite=False, mode='w'):
         self.rrd_file = rrd_file
@@ -78,11 +80,11 @@ class RRD(object):
         if self.mode == 'r':
             pass
 
-
     def create(self):
         cmd = [
             'rrdtool',
             'create',
+            self.rrd_file,
             '--start', str(self.start),
             '--step', str(self.step),
         ]
@@ -95,23 +97,62 @@ class RRD(object):
 
         for rra in self.rras:
             cmd.append(str(rra))
-        print(cmd)
-        p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        print(p)
-        output = p.communicate()
-        print(output)
+        p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+        result, error = p.communicate()
+        if len(error) > 0:
+            return (False, error)
+        else:
+            return True
+    def info(self):
+        cmd = [
+            'rrdtool',
+            'info',
+            self.rrd_file
+        ]
 
+        p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+        result, error = p.communicate()
+        if len(error) > 0:
+            return (False, error)
+        else:
+            infos = {}
+            for line in result.split('\n'):
+                line.split('=')
+            return (True, result)
+
+    def first(self):
+        cmd = [
+            'rrdtool',
+            'first',
+            self.rrd_file
+        ]
+
+        p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+        result, error = p.communicate()
+        if len(error) > 0:
+            return (False, error)
+        else:
+            return (True, int(result))
+
+    def last(self):
+        cmd = [
+            'rrdtool',
+            'last',
+            self.rrd_file
+        ]
+
+        p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+        result, error = p.communicate()
+        if len(error) > 0:
+            return (False, error)
+        else:
+            return (True, int(result))
+        
 
 
 
 if __name__ == '__main__':
-    dss = [
-        DS('test1', DSType.COUNTER.name, 60),
-        # DS('test2', DSType.GAUGE.name, 60)
-    ]
-    rras = [
-        RRA(CF.AVERAGE, xff=0.5, steps=60, rows=24),
-        # RRA(CF.MAX, xff=0.5, steps=60, rows=24)
-    ]
-    r = RRD('c:/test.rrd', dataSources=dss, rras=rras)
-    r.create()
+    r = RRD('c:/test.rrd')
+    ok, result = r.last()
+    print(ok)
+    print(result)
