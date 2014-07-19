@@ -3,7 +3,7 @@
 # @Author: Turbidsoul Chen
 # @Date:   2014-06-18 16:44:49
 # @Last Modified by:   Turbidsoul Chen
-# @Last Modified time: 2014-06-18 17:14:35
+# @Last Modified time: 2014-07-18 10:24:44
 
 import requests
 import json
@@ -113,3 +113,7 @@ def encode2utf8(s):
 
 def toint(s):
     return int(s) if s and s.isdigit() else None
+
+
+def is_str(s):
+    return isinstance(s, basestring)
