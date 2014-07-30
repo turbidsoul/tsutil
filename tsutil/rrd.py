@@ -5,10 +5,20 @@
 # @Last Modified 2014-07-19
 
 
+import re
 import time
-from subprocess import Popen, PIPE
+import platform
+from subprocess import PIPE, Popen
+
 from enum import Enum
 from util import is_str
+
+if platform.python_version()[:-2] >= '2.7':
+    from collections import OrderedDict
+else:
+    from ordereddict import OrderedDict
+
+_infoPort = re.compile(r"^\s*(.*?)\s*=\s*(.*?)\s*$")
 
 
 class RRDError(Exception):
@@ -41,6 +51,8 @@ class DS(object):
         self.minval = minval
         self.maxval = maxval
 
+
+
     def __str__(self):
         return 'DS:%s:%s:%s:%s:%s' % (self.name, self.ds_type.name,
                                       str(self.heartbeat), str(self.minval),
@@ -62,7 +74,7 @@ class RRA(object):
 
     def __str__(self):
         return "RRA:%s:%.1f:%d:%d" % (self.cf.name, self.xff, self.steps,
-                                       self.rows)
+                                      self.rows)
 
     def __repr__(self):
         return self.__str__()
@@ -103,6 +115,7 @@ class RRD(object):
             return (False, error)
         else:
             return True
+
     def info(self):
         cmd = [
             'rrdtool',
@@ -115,10 +128,37 @@ class RRD(object):
         if len(error) > 0:
             return (False, error)
         else:
-            infos = {}
+            infos = OrderedDict()
             for line in result.split('\n'):
-                line.split('=')
+                line = line.strip()
+                k, v = _infoPort.match(line).groups()
+                if k.startswith('ds['):
+                    dskeys = k.split('.')
+                    dsname = dskeys[0][3:-1]
+                    dskey = dskeys[1]
+                    ds = None
+                    if dsname in infos:
+                        ds = infos[dsname]
+                    else:
+                        ds = DS()
+                        ds.name = dsname
+                    v = v.strip('"')
+                    if dskey == 'type':
+                        ds.ds_type = v
+                    elif dskey == 'min':
+                        ds.minval = int(v)
+                    elif dskey == 'max':
+                        ds.maxval = int(v)
+                    elif 
+                elif k.startswith('rra['):
+                    pass
+                else:
+                    v = v.strip('"')
+                    if v.isdigit():
+                        v = int(v)
+                    infos[k] = v
             return (True, result)
+
 
     def first(self):
         cmd = [
@@ -147,8 +187,6 @@ class RRD(object):
             return (False, error)
         else:
             return (True, int(result))
-        
-
 
 
 if __name__ == '__main__':
