@@ -149,7 +149,7 @@ class RRD(object):
                         ds.minval = int(v)
                     elif dskey == 'max':
                         ds.maxval = int(v)
-                    elif 
+                    # elif 
                 elif k.startswith('rra['):
                     pass
                 else:
