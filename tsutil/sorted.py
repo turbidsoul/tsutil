@@ -3,11 +3,11 @@
 # @Author: Turbidsoul Chen
 # @Date:   2014-07-30 10:07:05
 # @Last Modified by:   Turbidsoul Chen
-# @Last Modified time: 2014-07-30 10:07:12
+# @Last Modified time: 2014-07-30 10:14:44
 
 
 
-def quick_sorted(lst, func=lambda a, b: a - b, reversed=False):
+def quick_sorted(lst, func=lambda a, b: cmp(a, b), reversed=False):
     if len(lst) <= 1:
         return lst
     pivot = lst[0]
