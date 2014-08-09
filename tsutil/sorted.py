@@ -3,7 +3,7 @@
 # @Author: Turbidsoul Chen
 # @Date:   2014-07-30 10:07:05
 # @Last Modified by:   Turbidsoul Chen
-# @Last Modified time: 2014-08-08 12:26:58
+# @Last Modified time: 2014-08-08 14:26:08
 
 
 def quick_sorted(lst, func=cmp, reversed=False):
