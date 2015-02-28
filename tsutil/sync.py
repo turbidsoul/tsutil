@@ -6,7 +6,7 @@
 # @Author: Turbidsoul Chen
 # @Date:   2014-08-09 16:02:59
 # @Last Modified by:   Turbidsoul Chen
-# @Last Modified time: 2014-09-10 10:31:03
+# @Last Modified time: 2015-02-28 17:40:56
 
 import inspect
 
@@ -27,9 +27,11 @@ def wrap_object(func, before, after):
 
 
 class GenericWrapper(object):
+
     """
     object of all methods use before/after calls to encapsulate
     """
+
     def __init__(self, obj, before, after, ignore={}):
         clazzname = 'GenericWrapper'
         self.__dict__['_%s__method' % clazzname] = {}
@@ -49,9 +51,11 @@ class GenericWrapper(object):
 
 
 class SynchronizedObject(GenericWrapper):
+
     '''
     Synchronized Object
     '''
+
     def __init__(self, obj, ignore={}, lock=None):
         if not lock:
             import threading
