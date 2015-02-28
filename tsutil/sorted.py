@@ -3,7 +3,19 @@
 # @Author: Turbidsoul Chen
 # @Date:   2014-07-30 10:07:05
 # @Last Modified by:   Turbidsoul Chen
-# @Last Modified time: 2014-08-08 14:26:08
+# @Last Modified time: 2015-02-28 17:37:45
+
+
+def cmp(a, b):
+    """
+    >>> cmp(1, 2)
+    -1
+    >>> cmp(2, 1)
+    1
+    >>> cmp(1, 1)
+    0
+    """
+    return (a > b) - (b > a)
 
 
 def quick_sorted(lst, func=cmp, reversed=False):
@@ -51,7 +63,7 @@ def head_sorted(lst, func=cmp, reversed=False):
     """
     def make_maxhead(lst, start, end):
         root = start
-        while 1:
+        while True:
             left = root * 2 + 1
             right = root * 2 + 2
             if left > end:
@@ -60,7 +72,7 @@ def head_sorted(lst, func=cmp, reversed=False):
             if right <= end and func(lst[left], lst[right]) < 0:
                 child = right
             if func(lst[root], lst[child]) < 0:
-                lst[root], lst[child] = lst[child],lst[root]
+                lst[root], lst[child] = lst[child], lst[root]
                 root = child
             else:
                 break
@@ -94,7 +106,7 @@ def merge_sorted(lst,  func=cmp, reversed=False):
         while a and b:
             mlst.append(a.pop(0) if func(a[0], b[0]) < 0 else b.pop(0))
         return mlst + a + b
-    m = len(lst) / 2
+    m = int(len(lst) / 2)
     a = merge_sorted(lst[:m], func=func)
     b = merge_sorted(lst[m:], func=func)
     l = merge(a, b)

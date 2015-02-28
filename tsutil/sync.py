@@ -6,7 +6,7 @@
 # @Author: Turbidsoul Chen
 # @Date:   2014-08-09 16:02:59
 # @Last Modified by:   Turbidsoul Chen
-# @Last Modified time: 2014-08-09 16:07:22
+# @Last Modified time: 2014-09-10 10:31:03
 
 import inspect
 
@@ -19,7 +19,7 @@ def wrap_object(func, before, after):
         before()
         try:
             return func(*args, **kwargs)
-        except Exception, e:
+        except Exception as e:
             raise e
         finally:
             after()

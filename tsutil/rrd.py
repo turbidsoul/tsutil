@@ -51,8 +51,6 @@ class DS(object):
         self.minval = minval
         self.maxval = maxval
 
-
-
     def __str__(self):
         return 'DS:%s:%s:%s:%s:%s' % (self.name, self.ds_type.name,
                                       str(self.heartbeat), str(self.minval),
@@ -62,8 +60,8 @@ class DS(object):
         return self.__str__()
 
 
-
 class RRA(object):
+
     def __init__(self, cf, xff, steps, rows):
         if is_str(cf):
             cf = CF.value_of(cf)
@@ -79,16 +77,18 @@ class RRA(object):
     def __repr__(self):
         return self.__str__()
 
+
 class RRD(object):
+
     def __init__(self, rrd_file, start=int(time.time())-10, step=300,
                  dataSources=[], rras=[], no_overwrite=False, mode='w'):
         self.rrd_file = rrd_file
-        self.start=start
-        self.step=step
+        self.start = start
+        self.step = step
         self.dataSources = dataSources
         self.rras = rras
         self.no_overwrite = no_overwrite
-        self.mode=mode
+        self.mode = mode
         if self.mode == 'r':
             pass
 
@@ -149,7 +149,6 @@ class RRD(object):
                         ds.minval = int(v)
                     elif dskey == 'max':
                         ds.maxval = int(v)
-                    # elif 
                 elif k.startswith('rra['):
                     pass
                 else:
@@ -158,7 +157,6 @@ class RRD(object):
                         v = int(v)
                     infos[k] = v
             return (True, result)
-
 
     def first(self):
         cmd = [
@@ -187,10 +185,3 @@ class RRD(object):
             return (False, error)
         else:
             return (True, int(result))
-
-
-if __name__ == '__main__':
-    r = RRD('c:/test.rrd')
-    ok, result = r.last()
-    print(ok)
-    print(result)

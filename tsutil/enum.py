@@ -3,7 +3,7 @@
 # @Author: Turbidsoul Chen
 # @Date:   2014-06-18 16:39:48
 # @Last Modified by:   Turbidsoul Chen
-# @Last Modified time: 2014-06-18 16:44:34
+# @Last Modified time: 2014-09-10 10:35:19
 
 import string
 
@@ -13,7 +13,7 @@ class EnumMetaClass:
     def __init__(self, name, bases, dict):
         for base in bases:
             if base.__class__ is not EnumMetaClass:
-                raise TypeError, "Enumeration base class must be enumeration"
+                raise TypeError("Enumeration base class must be enumeration")
         bases = filter(lambda x: x is not Enum, bases)
         self.__name__ = name
         self.__bases__ = bases
@@ -34,7 +34,7 @@ class EnumMetaClass:
                 except AttributeError:
                     continue
 
-        raise AttributeError, name
+        raise AttributeError(name)
 
     def __repr__(self):
         s = self.__name__
@@ -69,9 +69,9 @@ class EnumInstance:
         return self.__value
 
     def __repr__(self):
-        return "EnumInstance(%s, %s, %s)" % (`self.__classname`,
-                                             `self.__enumname`,
-                                             `self.__value`)
+        return "EnumInstance(%s, %s, %s)" % (self.__classname,
+                                             self.__enumname,
+                                             self.__value)
 
     def __str__(self):
         return "%s.%s" % (self.__classname, self.__enumname)
