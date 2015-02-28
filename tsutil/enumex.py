@@ -3,7 +3,7 @@
 # @Author: Turbidsoul Chen
 # @Date:   2014-06-18 16:39:48
 # @Last Modified by:   Turbidsoul Chen
-# @Last Modified time: 2014-09-10 10:35:19
+# @Last Modified time: 2015-02-28 17:51:42
 
 import string
 
@@ -76,10 +76,10 @@ class EnumInstance:
     def __str__(self):
         return "%s.%s" % (self.__classname, self.__enumname)
 
-    def __cmp__(self, other):
-        if not isinstance(other, EnumInstance):
-            return True
-        return cmp(self.name, other.name)
+    # def __cmp__(self, other):
+    #     if not isinstance(other, EnumInstance):
+    #         return True
+    #     return cmp(self.name, other.name)
 
     @property
     def value(self):

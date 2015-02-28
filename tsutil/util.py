@@ -3,7 +3,7 @@
 # @Author: Turbidsoul Chen
 # @Date:   2014-06-18 16:44:49
 # @Last Modified by:   Turbidsoul Chen
-# @Last Modified time: 2014-07-18 10:24:44
+# @Last Modified time: 2015-02-28 17:52:34
 
 import requests
 import json
@@ -17,6 +17,7 @@ def singleton(cls, *args, **kwargs):
     singleton decorator
     '''
     instances = {}
+
     def _singleton():
         if cls not in instances:
             instances[cls] = cls(*args, **kwargs)
@@ -24,9 +25,10 @@ def singleton(cls, *args, **kwargs):
     return _singleton
 
 
-
 sina = 'http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=json&ip=%s'
 taobao = 'http://ip.taobao.com/service/getIpInfo.php?ip=%s'
+
+
 def get_location_from_sina(ip):
     """
         {
@@ -84,7 +86,6 @@ def get_location_from_taobao(ip):
     return ("%s,%s,%s,%s,%s" % (l['country'], l['area'], l['region'], l['city'], l['isp'])).encode('utf8')
 
 
-
 def get_week_start_end_day():
     """
     Get the week start date and end date
@@ -103,17 +104,16 @@ def get_month_start_end_day():
     return (date(t.year, t.month, 1), date(t.year, t.month, n))
 
 
-
-def encode2utf8(s):
-    """
-    By chardet been encoded string , and then re-encoded string to utf8, if this fails, the character encoding is ignored
-    """
-    return unicode(s, chardet.detect(s)['encoding'], 'ignore').encode('utf8', 'ignore')
+# def encode2utf8(s):
+#     """
+#     By chardet been encoded string , and then re-encoded string to utf8, if this fails, the character encoding is ignored
+#     """
+#     return unicode(s, chardet.detect(s)['encoding'], 'ignore').encode('utf8', 'ignore')
 
 
 def toint(s):
     return int(s) if s and s.isdigit() else None
 
 
-def is_str(s):
-    return isinstance(s, basestring)
+# def is_str(s):
+#     return isinstance(s, basestring)
