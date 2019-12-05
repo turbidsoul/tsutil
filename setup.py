@@ -12,7 +12,7 @@ if not platform.python_version()[:-2] < '2.7':
 
 setup(
       name='tsutil',
-      version='0.1.6.5',
+      version='0.1.6.6',
       py_modules=['tsutil.enum', 'tsutil.encoder', 'tsutil.util', 'tsutil.daemonize', 'tsutil.sorted', 'tsutil.sync'],
       author='Turbidsoul Chen',
       author_email='sccn.sq+py@gmail.com',
