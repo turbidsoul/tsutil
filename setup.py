@@ -3,7 +3,7 @@
 import platform
 from setuptools import setup
 
-reqs = ['requests==2.20.0', 'chardet==2.1.1']
+reqs = ['requests==2.23.0', 'chardet==3.0.4']
 
 
 
