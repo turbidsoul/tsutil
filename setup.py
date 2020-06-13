@@ -12,8 +12,8 @@ if not platform.python_version()[:-2] < '2.7':
 
 setup(
       name='tsutil',
-      version='0.1.6.6',
-      py_modules=['tsutil.enum', 'tsutil.encoder', 'tsutil.util', 'tsutil.daemonize', 'tsutil.sorted', 'tsutil.sync'],
+      version='0.1.7.0',
+      py_modules=['tsutil.enum', 'tsutil.encoder', 'tsutil.util', 'tsutil.daemonize', 'tsutil.sorted', 'tsutil.sync', 'tsutil.sequence'],
       author='Turbidsoul Chen',
       author_email='sccn.sq+py@gmail.com',
       url='http://github.com/turbidsoul/tsutil',
