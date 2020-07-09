@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from typing import Union
 import time
+import sys
 
 class Sequence(object):
   
@@ -59,9 +60,3 @@ def sequence(datacenter_id,  worker_id):
   s = Sequence(datacenter_id, worker_id)
   while True:
     yield s.next_id()
-
-if __name__ == "__main__":
-  s = sequence(1, 1)
-  print(next(s))
-  print(next(s))
-  print(next(s))
