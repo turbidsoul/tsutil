@@ -7,5 +7,5 @@
 
 
 
-import daemonize, sync, sequence
-from util import *
+import tsutil.daemonize, tsutil.sync, tsutil.sequence
+from .util import *

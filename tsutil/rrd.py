@@ -11,12 +11,9 @@ import platform
 from subprocess import PIPE, Popen
 
 from enum import Enum
-from util import is_str
+from .util import is_str
 
-if platform.python_version()[:-2] >= '2.7':
-    from collections import OrderedDict
-else:
-    from ordereddict import OrderedDict
+from collections import OrderedDict
 
 _infoPort = re.compile(r"^\s*(.*?)\s*=\s*(.*?)\s*$")
 
