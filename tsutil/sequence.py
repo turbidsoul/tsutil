@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from typing import Union
 import time
-import sys
+from .util import singleton_fun
 
 class Sequence(object):
   
@@ -60,4 +60,6 @@ def sequence(datacenter_id,  worker_id):
   while True:
     yield s.next_id()
 
-
+@singleton_fun
+def single_seq(datacenter_id, worker_id):
+  return sequence(datacenter_id, worker_id)

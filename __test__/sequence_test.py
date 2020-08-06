@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from unittest import TestCase, main
-from tsutil.sequence import sequence
+from tsutil.sequence import sequence, single_seq
 
 
 class TestSequence(TestCase):
@@ -46,5 +46,12 @@ class TestSequence(TestCase):
     self.assertIsNotNone(id2)
     self.assertNotEqual(id1, id2)
 
+  def test_seq_single(self):
+    seq1 = single_seq(1, 1)
+    seq2 = single_seq(1, 1)
+    self.assertIs(seq1, seq2)
+    self.assertEqual(hash(seq1), hash(seq2))
+    id1, id2 = next(seq1), next(seq2)
+    self.assertNotEqual(id1, id2)
 if __name__ == "__main__":
   main()
