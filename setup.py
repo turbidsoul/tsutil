@@ -5,14 +5,9 @@ from setuptools import setup
 
 reqs = ['requests==2.23.0']
 
-
-
-if not platform.python_version()[:-2] < '2.7':
-      reqs.append('ordereddict==1.1')
-
 setup(
       name='tsutil',
-      version='0.1.7.3',
+      version='0.1.7.4',
       py_modules=['tsutil.util', 'tsutil.daemonize', 'tsutil.sync', 'tsutil.sequence'],
       author='Turbidsoul Chen',
       author_email='sccn.sq+py@gmail.com',
