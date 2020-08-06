@@ -9,6 +9,7 @@ import requests
 import json
 from datetime import date, timedelta
 from calendar import mdays
+from functools import wraps
 
 
 def singleton(cls, *args, **kwargs):
@@ -23,6 +24,19 @@ def singleton(cls, *args, **kwargs):
     return instances[cls]
   return _singleton
 
+def singleton_fun(fun):
+  '''
+  对方法的返回结果做单例
+  使用参数作为key
+  '''
+  instances = {}
+  @wraps(fun)
+  def _singleton(*args, **kwargs):
+    k = fun.__name__ + '_' + '|'.join(map(lambda it: str(it), args)) + '_' + '|'.join(str(it[0])+str(it[1]) for it in tuple(kwargs))
+    if k not in instances:
+      instances[k] = fun(*args, **kwargs)
+    return instances[k]
+  return _singleton
 
 sina = 'http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=json&ip=%s'
 taobao = 'http://ip.taobao.com/service/getIpInfo.php?ip=%s'
