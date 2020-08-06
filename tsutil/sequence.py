@@ -35,7 +35,6 @@ class Sequence(object):
     while True:
       if (t := self.time_gen()) > self.last_timestamp:
         return t
-        
   
   def next_id(self) -> Union[int]:
     timestamp = self.time_gen()
@@ -60,3 +59,5 @@ def sequence(datacenter_id,  worker_id):
   s = Sequence(datacenter_id, worker_id)
   while True:
     yield s.next_id()
+
+
