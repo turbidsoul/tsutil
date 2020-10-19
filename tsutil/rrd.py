@@ -7,11 +7,9 @@
 
 import re
 import time
-import platform
 from subprocess import PIPE, Popen
 
 from enum import Enum
-from .util import is_str
 
 from collections import OrderedDict
 
@@ -41,8 +39,8 @@ class DS(object):
 
     def __init__(self, name, ds_type, heartbeat, minval='U', maxval='U'):
         self.name = name
-        if is_str(ds_type):
-            ds_type = DSType.value_of(ds_type.upper())
+        if type(ds_type) == str:
+            ds_type = DSType[ds_type.upper()]
         self.ds_type = ds_type
         self.heartbeat = heartbeat
         self.minval = minval
@@ -60,8 +58,8 @@ class DS(object):
 class RRA(object):
 
     def __init__(self, cf, xff, steps, rows):
-        if is_str(cf):
-            cf = CF.value_of(cf)
+        if type(cf) == str:
+            cf = CF[cf.upper()]
         self.cf = cf
         self.xff = xff
         self.steps = steps

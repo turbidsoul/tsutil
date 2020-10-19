@@ -7,7 +7,7 @@ reqs = ['requests==2.23.0']
 
 setup(
       name='tsutil',
-      version='0.1.7.4',
+      version='0.1.7.5',
       py_modules=['tsutil.util', 'tsutil.daemonize', 'tsutil.sync', 'tsutil.sequence'],
       author='Turbidsoul Chen',
       author_email='sccn.sq+py@gmail.com',
