@@ -7,8 +7,8 @@ reqs = ['requests==2.23.0']
 
 setup(
       name='tsutil',
-      version='0.1.7.5',
-      py_modules=['tsutil.util', 'tsutil.daemonize', 'tsutil.sync', 'tsutil.sequence'],
+      version='0.1.8.1',
+      py_modules=['tsutil.util', 'tsutil.daemonize', 'tsutil.sync', 'tsutil.sequence', 'tsutil.http_server'],
       author='Turbidsoul Chen',
       author_email='sccn.sq+py@gmail.com',
       url='http://github.com/turbidsoul/tsutil',

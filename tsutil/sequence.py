@@ -63,3 +63,15 @@ def sequence(datacenter_id,  worker_id):
 @singleton_fun
 def single_seq(datacenter_id, worker_id):
   return sequence(datacenter_id, worker_id)
+
+if __name__ == "__main__":
+  import argparse
+  parse = argparse.ArgumentParser('雪花算法生成ID')
+  parse.add_argument('--datacenter', '-d', type=int, default=0, help='数据中心id')
+  parse.add_argument('--worker', '-w', type=int, default=0, help='工作服务组id')
+  parse.add_argument('count', type=int, help='生成数量')
+  args=parse.parse_args()
+  print(args)
+  seq = sequence(args.datacenter, args.worker)
+  for i in range(args.count):
+    print(next(seq))
