@@ -7,5 +7,5 @@
 
 
 
-import tsutil.daemonize, tsutil.sync, tsutil.sequence
+import tsutil.daemonize, tsutil.sync, tsutil.sequence, tsutil.decorators
 from .util import *
