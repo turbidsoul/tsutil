@@ -6,11 +6,10 @@ import posixpath
 from typing import List, Tuple, Union
 import mimetypes
 
-from pygments.lexer import Lexer
 use_pygments = False
 try:
   from pygments import highlight
-  from pygments.lexers import PythonLexer, get_lexer_for_mimetype
+  from pygments.lexers import get_lexer_for_mimetype, get_lexer_by_name, get_lexer_for_filename
   from pygments.formatters import HtmlFormatter
   use_pygments = True
 except:
@@ -96,7 +95,10 @@ class HttpServerProtocol(asyncio.Protocol):
     '.Z': 'application/octet-stream',
     '.bz2': 'application/x-bzip2',
     '.xz': 'application/x-xz',
+    '.yml': 'text/x-yaml',
+    '.cfg': 'text/x-ini',
   }
+  file_map = _encodings_map_default
   def __init__(self, base_dir):
     super(HttpServerProtocol).__init__()
     self.base_dir = base_dir
@@ -187,10 +189,10 @@ class HttpServerProtocol(asyncio.Protocol):
         """
         _, ext = posixpath.splitext(path)
         if ext in self.extensions_map:
-            return self.extensions_map[ext]
+          return self.extensions_map[ext]
         ext = ext.lower()
         if ext in self.extensions_map:
-            return self.extensions_map[ext]
+          return self.extensions_map[ext]
         guess, _ = mimetypes.guess_type(path)
         if guess:
             return guess
@@ -202,7 +204,7 @@ class HttpServerProtocol(asyncio.Protocol):
     ext = file_path.split('.')[-1]
     return highlight_template.format(file_name=file_path, nav=file_path, lang=ext, content=content)
   
-  def do_text_file_by_pygments(self, file_path, req_path, lexer: Union[Lexer]) -> Union[str]:
+  def do_text_file_by_pygments(self, file_path, req_path, lexer) -> Union[str]:
     formatter = HtmlFormatter(style='colorful')
     style = formatter.get_style_defs()
     with open(file_path, 'r', encoding='utf-8') as f:
@@ -224,7 +226,7 @@ class HttpServerProtocol(asyncio.Protocol):
     pass
   
   def list_dir(self, dir_path: Union[str], req_path: Union[str]) -> Union[str]:
-    return '<ul>' + "".join(map(lambda d: '<li><a href="'+os.path.join(req_path, d)+'">' + d + '</a></li>', os.listdir(dir_path))) + '</ul>'
+    return '<ul>' + "".join(map(lambda d: '<li><a href="'+os.path.join('/', req_path, d)+'">' + d + '</a></li>', os.listdir(dir_path))) + '</ul>'
 
 
 async def main(bind: Union[str], port: Union[int], verbose: Union[bool], base_dir: Union[str]):
