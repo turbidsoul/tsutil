@@ -2,8 +2,19 @@
 import asyncio
 import logging
 import os
-from typing import Union
+import posixpath
+from typing import List, Tuple, Union
 import mimetypes
+
+from pygments.lexer import Lexer
+use_pygments = False
+try:
+  from pygments import highlight
+  from pygments.lexers import PythonLexer, get_lexer_for_mimetype
+  from pygments.formatters import HtmlFormatter
+  use_pygments = True
+except:
+  pass
 
 req_log = logging.getLogger('request')
 req_log.setLevel(logging.INFO)
@@ -19,7 +30,7 @@ dir_template = '''<html>
 </body>
 </html>'''
 
-file_template = '''<html>
+highlight_template = '''<html>
 <head>
 <title>文件: {file_name}</title>
 <link rel="stylesheet"
@@ -36,20 +47,36 @@ file_template = '''<html>
 </body>
 </html>'''
 
-def is_text(path):
-  type = mimetypes.guess_type(path)[0]
-  return type and type == 'text/plain'
-    
+pygments_template = '''<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{title}</title>
+    <style>
+      {style}
+    </style>
+</head>
+<body>
+  <h2>{nav}</h2>
+  <hr>
+  {content}
+</body>
+</html>'''
+
+def is_text(type: Union[str]) -> Union[bool]:
+  return type.startswith('text/')
 
 class BasicHttpResponse(object):
-  protocol = 'HTTP'
-  protocol_version = '1.1'
-  status_code = 200
-  headers = [
+  protocol: Union[str] = 'HTTP'
+  protocol_version: Union[str] = '1.1'
+  status_code: Union[int] = 200
+  headers: List[Tuple[str, str]] = [
     ('Server', 'asyncio-server')
   ]
   
-  body = ''
+  body: Union[str] = ''
   
   template = '''{}/{} {} OK
 {}
@@ -64,6 +91,12 @@ class BasicHttpResponse(object):
 
 class HttpServerProtocol(asyncio.Protocol):
   base_dir: Union[str]
+  extensions_map = _encodings_map_default = {
+    '.gz': 'application/gzip',
+    '.Z': 'application/octet-stream',
+    '.bz2': 'application/x-bzip2',
+    '.xz': 'application/x-xz',
+  }
   def __init__(self, base_dir):
     super(HttpServerProtocol).__init__()
     self.base_dir = base_dir
@@ -89,14 +122,27 @@ class HttpServerProtocol(asyncio.Protocol):
     self.transport.close()
     
   def do_GET(self, req_path: Union[str]) -> Union[BasicHttpResponse]:
+    req_path = req_path[1:] if req_path.startswith('/') else req_path
     path = os.path.join(self.base_dir, req_path)
     r = BasicHttpResponse()
     if not os.path.exists(path):
       r.status_code = 404
       r.body = '<h1>404</h1>'
       return r
+    ctype = self.guess_type(path)
     if os.path.isfile(path):
-      if is_text(path):
+      has_lexer = True
+      lexer = None
+      try:
+        lexer = get_lexer_for_mimetype(ctype)
+        if lexer is None:
+          has_lexer = False
+      except:
+        has_lexer = False
+      if use_pygments and has_lexer:
+        r.headers.append(('Content-Type', 'text/html; charset=utf-8'))
+        r.body = self.do_text_file_by_pygments(path, req_path, lexer)
+      elif is_text(ctype):
         r.headers.append(('Content-Type', 'text/html; charset=utf-8'))
         r.body = self.do_text_file(path, req_path)
       else:
@@ -124,20 +170,57 @@ class HttpServerProtocol(asyncio.Protocol):
       qs_map = dict(map(lambda it: it.split('='), query_string.split('&')))
       
     return method, path, qs_map, hash_string
+ 
+  def guess_type(self, path):
+        """Guess the type of a file.
+
+        Argument is a PATH (a filename).
+
+        Return value is a string of the form type/subtype,
+        usable for a MIME Content-type header.
+
+        The default implementation looks the file's extension
+        up in the table self.extensions_map, using application/octet-stream
+        as a default; however it would be permissible (if
+        slow) to look inside the data to make a better guess.
+
+        """
+        _, ext = posixpath.splitext(path)
+        if ext in self.extensions_map:
+            return self.extensions_map[ext]
+        ext = ext.lower()
+        if ext in self.extensions_map:
+            return self.extensions_map[ext]
+        guess, _ = mimetypes.guess_type(path)
+        if guess:
+            return guess
+        return 'application/octet-stream'
   
   def do_text_file(self, file_path, req_path):
-    req_log.debug(mimetypes.guess_type(file_path))
     with open(file_path, 'r', encoding='utf-8') as f:
       content = f.read()
     ext = file_path.split('.')[-1]
-    return file_template.format(file_name=file_path, nav=file_path, lang=ext, content=content)
+    return highlight_template.format(file_name=file_path, nav=file_path, lang=ext, content=content)
+  
+  def do_text_file_by_pygments(self, file_path, req_path, lexer: Union[Lexer]) -> Union[str]:
+    formatter = HtmlFormatter(style='colorful')
+    style = formatter.get_style_defs()
+    with open(file_path, 'r', encoding='utf-8') as f:
+      content = f.read()
+    return pygments_template.format(
+      title=file_path,
+      nav=file_path,
+      style=style,
+      content=highlight(content, lexer, formatter)
+    )
+    
   
   def do_dir(self, dir_path, req_path):
     dir_html = self.list_dir(dir_path, req_path)
     
     return dir_template.format(dir_name=dir_path, nav=dir_path, content=dir_html)
   
-  def nav(self, dir: Union[str]) -> Union[str]:
+  def nav(self, dir: Union[str]) -> Union[str, None]:
     pass
   
   def list_dir(self, dir_path: Union[str], req_path: Union[str]) -> Union[str]:
@@ -149,7 +232,7 @@ async def main(bind: Union[str], port: Union[int], verbose: Union[bool], base_di
   server = await loop.create_server(lambda: HttpServerProtocol(base_dir), bind, port)
   
   try:
-    req_log.info('starting HTTP server: %s:%s', bind, port)
+    req_log.info('starting HTTP server: http://%s:%s', bind, port)
     await server.serve_forever()
   except:
     server.close()

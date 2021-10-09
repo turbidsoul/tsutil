@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from tsutil.util import singleton, singleton_fun
+from tsutil.decorators import singleton, singleton_fun
 from unittest import TestCase, main
 
 @singleton

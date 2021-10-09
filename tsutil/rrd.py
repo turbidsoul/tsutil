@@ -124,7 +124,7 @@ class RRD(object):
             return (False, error)
         else:
             infos = OrderedDict()
-            for line in result.split('\n'):
+            for line in result.decode().split('\n'):
                 line = line.strip()
                 k, v = _infoPort.match(line).groups()
                 if k.startswith('ds['):
