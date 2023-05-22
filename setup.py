@@ -3,7 +3,7 @@
 import platform
 from setuptools import setup
 
-reqs = ['requests==2.23.0']
+reqs = ['requests==2.31.0']
 
 setup(
       name='tsutil',
